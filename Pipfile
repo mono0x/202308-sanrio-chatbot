@@ -4,11 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-langchain = "*"
+langchain = {extras = ["llms"], version = "*"}
 openai = "*"
+qdrant-client = "*"
 streamlit = "*"
+streamlit-chat = "*"
+tiktoken = "*"
+unstructured = "*"
 
 [dev-packages]
+watchdog = "*"
 
 [requires]
 python_version = "3.11"
