@@ -18,12 +18,12 @@ class MyBSHTMLLoader(BSHTMLLoader):
         with open(self.file_path, "r", encoding=self.open_encoding) as f:
             soup = BeautifulSoup(f, **self.bs_kwargs)
 
+        text = soup.select("#main .entry")[0].get_text(self.get_text_separator)
+
         if soup.title:
             title = str(soup.title.string)
         else:
             title = ""
-
-        text = title + self.get_text_separator + soup.select("#main .entry")[0].get_text(self.get_text_separator)
 
         metadata: Dict[str, Union[str, None]] = {
             "source": self.file_path,
@@ -39,7 +39,11 @@ loader = DirectoryLoader(
     show_progress=True,
 )
 documents = loader.load()
-text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(encoding_name="cl100k_base", chunk_size=500)
+text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+    encoding_name="cl100k_base",
+    chunk_size=500,
+    separators=["\n\n", "\n", "。", "、", "．", "，", "？", "！"],
+)
 docs = text_splitter.split_documents(documents)
 embeddings = OpenAIEmbeddings()
 
